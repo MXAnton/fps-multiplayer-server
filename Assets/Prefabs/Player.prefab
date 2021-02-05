@@ -161,6 +161,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   username: 
+  kills: 0
+  deaths: 0
   shootOrigin: {fileID: 3596838042474402104}
   shootDistance: 100
   throwForce: 600
@@ -168,10 +170,11 @@ MonoBehaviour:
   maxHealth: 100
   itemAmount: 0
   maxItemAmount: 3
-  moveSpeed: 2.5
-  runSpeedMultiplier: 2.5
-  jumpSpeed: 7.5
-  gravity: -13
+  headXRotation: 0
+  moveSpeed: 2
+  runSpeedMultiplier: 1.75
+  jumpSpeed: 5
+  gravity: -11
   yVelocity: 0
   height: 1.98
   stepHeight: 0.5
@@ -183,6 +186,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   bodyCollider: {fileID: 3961082937143840935}
+  inputs: 
 --- !u!143 &2859100122705694805
 CharacterController:
   m_ObjectHideFlags: 0

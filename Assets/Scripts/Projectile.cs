@@ -52,10 +52,16 @@ public class Projectile : MonoBehaviour
         Collider[] _colliders = Physics.OverlapSphere(transform.position, explosionRadius);
         foreach (Collider _collider in _colliders)
         {
+            float _hitDistance = Vector3.Distance(transform.position, _collider.transform.position);
+            float _damageToDeal = explosionRadius / _hitDistance;
+            _damageToDeal /= explosionRadius;
+            _damageToDeal *= explosionDamage;
+            _damageToDeal = Mathf.Round(_damageToDeal);
+
             if (_collider.CompareTag("Player"))
             {
-                _collider.GetComponent<Player>().TakeDamage(explosionDamage);
-                ServerSend.PlayerHitInfo(thrownByPlayer, _collider.transform.position, explosionDamage);
+                _collider.GetComponent<Player>().TakeDamage(_damageToDeal);
+                ServerSend.PlayerHitInfo(thrownByPlayer, _collider.transform.position, _damageToDeal);
 
                 if (_collider.GetComponent<Player>().health <= 0)
                 {
@@ -66,8 +72,8 @@ public class Projectile : MonoBehaviour
             }
             else if (_collider.CompareTag("Enemy"))
             {
-                _collider.GetComponent<Enemy>().TakeDamage(explosionDamage);
-                ServerSend.PlayerHitInfo(thrownByPlayer, _collider.transform.position, explosionDamage);
+                _collider.GetComponent<Enemy>().TakeDamage(_damageToDeal);
+                ServerSend.PlayerHitInfo(thrownByPlayer, _collider.transform.position, _damageToDeal);
 
                 if (_collider.GetComponent<Enemy>().health <= 0)
                 {

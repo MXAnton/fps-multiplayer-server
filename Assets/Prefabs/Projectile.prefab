@@ -129,5 +129,6 @@ MonoBehaviour:
   rigidBody: {fileID: 1088911124217481535}
   thrownByPlayer: 0
   initialForce: {x: 0, y: 0, z: 0}
-  explosionRadius: 1.5
+  explosionRadius: 10
   explosionDamage: 75
+  explodeDelay: 0.2

@@ -458,6 +458,12 @@ public class Player : MonoBehaviour
         {
             if (_hit.collider.CompareTag("Player"))
             {
+                // If hit own player
+                if (_hit.collider.gameObject.GetComponent<Player>() == this)
+                {
+                    return;
+                }
+                // If the player hit is dead
                 if (_hit.collider.GetComponent<Player>().health <= 0)
                 {
                     return;
