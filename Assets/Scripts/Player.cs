@@ -38,6 +38,9 @@ public class Player : MonoBehaviour
 
     public bool[] inputs;
 
+    private bool hasMovementRequestId = false;
+    private int latestMovementRequestId = 0;
+
     private void Start()
     {
         gravity *= Time.fixedDeltaTime * Time.fixedDeltaTime;
@@ -81,7 +84,15 @@ public class Player : MonoBehaviour
             _inputDirection.x += 1;
         }
 
-        Move(_inputDirection);
+        if (hasMovementRequestId)
+        {
+            hasMovementRequestId = false;
+            Move(_inputDirection, latestMovementRequestId);
+        }
+        else
+        {
+            Move(_inputDirection);
+        }
         ServerSend.PlayerRotation(this);
         ServerSend.PlayerPosition(id, this, false); // bool for teleport or lerped movement
         ServerSend.PlayerInputs(this);
@@ -133,17 +144,14 @@ public class Player : MonoBehaviour
 
 
         // If something i in from of the player with less distance than _moveDirection, don't move.
-        if (Physics.Raycast(transform.position, _moveDirection, out RaycastHit _hit, Vector3.Distance(Vector3.zero, _moveDirection), discludePlayer, QueryTriggerInteraction.Ignore))
+        //if (Physics.Raycast(transform.position, _moveDirection, out RaycastHit _hit, Vector3.Distance(Vector3.zero, _moveDirection), discludePlayer, QueryTriggerInteraction.Ignore))
+        //{
+        //    _moveDirection = Vector3.zero;
+        //}
+        if (CollisionInOffset(_moveDirection / bodyCollider.radius))
         {
-            //float _maxDistanceAbleToMove = Vector3.Distance(Vector3.zero, _moveDirection) / _hit.distance;
-            //Debug.Log(_maxDistanceAbleToMove);
-
-            _moveDirection = Vector3.zero;
-            //_moveDirection = new Vector3(_moveDirection.x / _maxDistanceAbleToMove,
-            //                                _moveDirection.y / _maxDistanceAbleToMove,
-            //                                    _moveDirection.z / _maxDistanceAbleToMove);
+            //_moveDirection = Vector3.zero;
         }
-
 
         Vector3 _newPosition = transform.position + _moveDirection;
         transform.position = _newPosition;
@@ -247,6 +255,50 @@ public class Player : MonoBehaviour
                 transform.position = transform.position + penetrationVector;
             }
         }
+
+
+        //// Check with head collider
+        //overlaps = new Collider[4];
+        //num = Physics.OverlapSphereNonAlloc(transform.TransformPoint(headCollider.center), headCollider.radius, overlaps, discludePlayer, QueryTriggerInteraction.UseGlobal);
+
+        //for (int i = 0; i < num; i++)
+        //{
+        //    Transform t = overlaps[i].transform;
+        //    Vector3 dir;
+        //    float dist;
+
+        //    if (Physics.ComputePenetration(headCollider, transform.position, transform.rotation, overlaps[i], t.position, t.rotation, out dir, out dist))
+        //    {
+        //        Vector3 penetrationVector = dir * dist;
+        //        transform.position = transform.position + penetrationVector;
+        //    }
+        //}
+    }
+    private bool CollisionInOffset(Vector3 _offset)
+    {
+        // Check with body collider
+        Collider[] overlaps = new Collider[10];
+        int num = Physics.OverlapSphereNonAlloc(transform.TransformPoint(bodyCollider.center) + _offset, bodyCollider.radius, overlaps, discludePlayer, QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < num; i++)
+        {
+            if (overlaps[i].gameObject != gameObject)
+            {
+                return true;
+            }
+
+            //Transform t = overlaps[i].transform;
+            //Vector3 dir;
+            //float dist;
+
+            //if (Physics.ComputePenetration(bodyCollider, transform.position, transform.rotation, overlaps[i], t.position, t.rotation, out dir, out dist))
+            //{
+            //    Vector3 penetrationVector = dir * dist;
+            //    transform.position = transform.position + penetrationVector;
+            //}
+        }
+
+        return false;
 
 
         //// Check with head collider
@@ -424,25 +476,28 @@ public class Player : MonoBehaviour
         headXRotation = _headXRotation;
 
 
-        Vector2 _inputDirection = Vector2.zero;
-        if (inputs[0])
-        {
-            _inputDirection.y += 1;
-        }
-        if (inputs[1])
-        {
-            _inputDirection.y -= 1;
-        }
-        if (inputs[2])
-        {
-            _inputDirection.x -= 1;
-        }
-        if (inputs[3])
-        {
-            _inputDirection.x += 1;
-        }
+        latestMovementRequestId = _requestId;
+        hasMovementRequestId = true;
 
-        Move(_inputDirection, _requestId);
+        //Vector2 _inputDirection = Vector2.zero;
+        //if (inputs[0])
+        //{
+        //    _inputDirection.y += 1;
+        //}
+        //if (inputs[1])
+        //{
+        //    _inputDirection.y -= 1;
+        //}
+        //if (inputs[2])
+        //{
+        //    _inputDirection.x -= 1;
+        //}
+        //if (inputs[3])
+        //{
+        //    _inputDirection.x += 1;
+        //}
+
+        //Move(_inputDirection, _requestId);
     }
 
     public void Shoot(Vector3 _viewDirection)
