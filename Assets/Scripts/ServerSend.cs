@@ -210,14 +210,38 @@ public class ServerSend
         }
     }
 
-    public static void PlayerShot(Player _player, Vector3 _viewDirection)
+    public static void PlayerShot(Player _player, Vector3 _fireOrigin, Vector3 _viewDirection, int _weaponId, int _ammoInClip, int _extraAmmo)
     {
         using (Packet _packet = new Packet((int)ServerPackets.playerShot))
         {
             _packet.Write(_player.id);
+            _packet.Write(_fireOrigin);
             _packet.Write(_viewDirection);
+            _packet.Write(_weaponId);
+            _packet.Write(_ammoInClip);
+            _packet.Write(_extraAmmo);
 
-            SendTCPDataToAll(_player.id, _packet);
+            SendTCPDataToAll(_packet);
+        }
+    }
+
+    public static void PlayerReloadDone(Player _player, int _weaponId, int _ammoInClip, int _extraAmmo)
+    {
+        using (Packet _packet = new Packet((int) ServerPackets.playerReloadDone))
+        {
+            if (_player != null)
+            {
+                _packet.Write(_player.id);
+            }
+            else
+            {
+                _packet.Write(-1);
+            }
+            _packet.Write(_weaponId);
+            _packet.Write(_ammoInClip);
+            _packet.Write(_extraAmmo);
+
+            SendTCPDataToAll(_packet);
         }
     }
 
@@ -397,6 +421,89 @@ public class ServerSend
             _packet.Write(_viewDirection);
 
             SendTCPDataToAll(_packet);
+        }
+    }
+
+
+    public static void SpawnWeapon(Weapon _weapon)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.spawnWeapon))
+        {
+            SendTCPDataToAll(SpawnWeapon_Data(_weapon, _packet));
+        }
+    }
+    public static void SpawnWeapon(int _toClient, Weapon _weapon)
+    {
+        using (Packet _packet = new Packet((int) ServerPackets.spawnWeapon))
+        {
+            SendTCPData(_toClient, SpawnWeapon_Data(_weapon, _packet));
+        }
+    }
+
+    private static Packet SpawnWeapon_Data(Weapon _weapon, Packet _packet)
+    {
+        _packet.Write(_weapon.id);
+        _packet.Write(_weapon.whichWeapon);
+        _packet.Write(_weapon.transform.position);
+        _packet.Write(_weapon.currentClipAmmo);
+        _packet.Write(_weapon.currentExtraAmmo);
+        _packet.Write(_weapon.maxClipAmmo);
+        _packet.Write(_weapon.maxExtraAmmo);
+        _packet.Write(_weapon.reloadTime);
+        _packet.Write(_weapon.autoFireRate);
+        _packet.Write(_weapon.burstFireRate);
+        _packet.Write(_weapon.semiFireRate);
+        _packet.Write(_weapon.fireSpread);
+        _packet.Write(_weapon.shootDistance);
+        return _packet;
+    }
+
+    public static void WeaponPositionAndRotation(int _weaponId, Vector3 _position, Vector3 _rotation)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.weaponPositionAndRotation))
+        {
+            _packet.Write(_weaponId);
+            _packet.Write(_position);
+            _packet.Write(_rotation);
+
+            SendUDPDataToAll(_packet);
+        }
+    }
+
+    public static void PlayerPickedWeapon(int _whichPlayer, Weapon _weapon)
+    {
+        using (Packet _packet = new Packet((int) ServerPackets.playerPickedWeapon))
+        {
+            _packet.Write(_whichPlayer);
+            _packet.Write(_weapon.id);
+            _packet.Write(_weapon.weaponType);
+            _packet.Write(_weapon.currentClipAmmo);
+            _packet.Write(_weapon.currentExtraAmmo);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+
+    public static void PlayerDroppedWeapon(int _whichPlayer, Weapon _weapon)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.playerDroppedWeapon))
+        {
+            _packet.Write(_whichPlayer);
+            _packet.Write(_weapon.id);
+            _packet.Write(_weapon.weaponType);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+
+    public static void PlayerWeaponUsed(int _whichPlayer, int _weaponUsed)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.playerWeaponUsed))
+        {
+            _packet.Write(_whichPlayer);
+            _packet.Write(_weaponUsed);
+
+            SendTCPDataToAll(_whichPlayer, _packet);
         }
     }
     #endregion

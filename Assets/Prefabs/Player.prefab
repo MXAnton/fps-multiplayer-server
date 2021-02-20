@@ -81,6 +81,62 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3938342693107969613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 957223955750818851}
+  - component: {fileID: 5352838514317257881}
+  m_Layer: 0
+  m_Name: WeaponLoadout
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &957223955750818851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3938342693107969613}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.337, y: 0.517, z: 0.336}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 9013324623042847413}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5352838514317257881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3938342693107969613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1579ab2fd2c274e9b9c302dfec81e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3478975741192336883}
+  shootOrigin: {x: 0, y: 0.86, z: 0}
+  pickupDistance: 5
+  weaponPickupIgnore:
+    serializedVersion: 2
+    m_Bits: 256
+  weaponDropForce: 50000
+  weaponsHolder: {fileID: 3938342693107969613}
+  weaponsEquiped:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  weaponUsed: 0
 --- !u!1 &7513071955338381158
 GameObject:
   m_ObjectHideFlags: 0
@@ -144,6 +200,7 @@ Transform:
   m_Children:
   - {fileID: 8580967688605834950}
   - {fileID: 3596838042474402104}
+  - {fileID: 957223955750818851}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -163,15 +220,14 @@ MonoBehaviour:
   username: 
   kills: 0
   deaths: 0
-  shootOrigin: {fileID: 3596838042474402104}
-  shootDistance: 100
+  weaponsController: {fileID: 5352838514317257881}
   throwForce: 600
   health: 0
   maxHealth: 100
   itemAmount: 0
   maxItemAmount: 3
   headXRotation: 0
-  moveSpeed: 2
+  moveSpeed: 2.5
   runSpeedMultiplier: 1.75
   jumpSpeed: 5
   gravity: -11

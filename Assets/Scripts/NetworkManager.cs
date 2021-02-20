@@ -10,6 +10,11 @@ public class NetworkManager : MonoBehaviour
     public GameObject enemyPrefab;
     public GameObject projectilePrefab;
 
+    [Header("Weapons")]
+    public GameObject ak47Prefab;
+    public GameObject pistolPrefab;
+    public GameObject knifePrefab;
+
     private void Awake()
     {
         if (instance == null)
@@ -42,6 +47,11 @@ public class NetworkManager : MonoBehaviour
         Player _newPlayer = Instantiate(playerPrefab, 
                                             _currentMapProperties.spawnPositions[Random.Range(0, _currentMapProperties.spawnPositions.Length)].position, 
                                                 Quaternion.identity).GetComponent<Player>();
+
+        // Spawn weapons
+        Instantiate(ak47Prefab, _newPlayer.transform.position, Quaternion.identity).GetComponent<Weapon>();
+        Instantiate(pistolPrefab, _newPlayer.transform.position, Quaternion.identity).GetComponent<Weapon>();
+
         return _newPlayer;
     }
 

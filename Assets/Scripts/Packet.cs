@@ -19,6 +19,7 @@ public enum ServerPackets
     playerHealth,
     playerRespawned,
     playerShot,
+    playerReloadDone,
     playerHitInfo,
     playerDeathsAndKills,
     playerKilled,
@@ -32,7 +33,12 @@ public enum ServerPackets
     enemyPosition,
     enemyRotation,
     enemyHealth,
-    enemyShot
+    enemyShot,
+    spawnWeapon,
+    weaponPositionAndRotation,
+    playerPickedWeapon,
+    playerDroppedWeapon,
+    playerWeaponUsed
 }
 
 /// <summary>Sent from client to server.</summary>
@@ -41,7 +47,12 @@ public enum ClientPackets
     welcomeReceived = 1,
     requestServer,
     playerMovement,
+    playerTryPickUpWeapon,
+    playerTryDropWeapon,
     playerShoot,
+    playerWeaponUsed,
+    playerFireMode,
+    playerReload,
     playerThrowItem
 }
 

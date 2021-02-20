@@ -222,6 +222,12 @@ public class Client
         {
             ServerSend.SpawnEnemy(id, _enemy);
         }
+
+
+        foreach (Weapon _weapon in Weapon.weapons.Values)
+        {
+            ServerSend.SpawnWeapon(id, _weapon);
+        }
     }
 
     private void Disconnect()
@@ -230,6 +236,15 @@ public class Client
 
         ThreadManager.ExecuteOnMainThread(() =>
         {
+            // search all weapons in weaponsholder, then drop every weapon
+            Weapon[] _weapons = player.weaponsController.weaponsHolder.transform.GetComponentsInChildren<Weapon>(true);
+            foreach (Weapon _weapon in _weapons)
+            {
+                Debug.Log("weapons to drop: " + _weapon.id);
+
+                player.weaponsController.TryDropWeapon(_weapon.id, _weapon.weaponType, Vector3.zero);
+            }
+
             UnityEngine.Object.Destroy(player.gameObject);
             player = null;
         });

@@ -119,7 +119,12 @@ public class Server
                 { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived },
                 { (int)ClientPackets.requestServer, ServerHandle.RequestServer },
                 { (int)ClientPackets.playerMovement, ServerHandle.PlayerMovement },
+                { (int)ClientPackets.playerTryPickUpWeapon, ServerHandle.PlayerTryPickUpWeapon },
+                { (int)ClientPackets.playerTryDropWeapon, ServerHandle.PlayerTryDropWeapon },
                 { (int)ClientPackets.playerShoot, ServerHandle.PlayerShoot },
+                { (int)ClientPackets.playerWeaponUsed, ServerHandle.PlayerWeaponUsed },
+                { (int)ClientPackets.playerFireMode, ServerHandle.PlayerFireMode },
+                { (int)ClientPackets.playerReload, ServerHandle.PlayerReload },
                 { (int)ClientPackets.playerThrowItem, ServerHandle.PlayerThrowItem }
             };
         Debug.Log("Initialized packets.");

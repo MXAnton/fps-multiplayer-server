@@ -11,9 +11,11 @@ public class Player : MonoBehaviour
     public int kills;
     public int deaths;
 
+    public WeaponsController weaponsController;
+
     //public CharacterController controller;
-    public Transform shootOrigin;
-    public float shootDistance = 100f;
+    //public Transform shootOrigin;
+    //public float shootDistance = 100f;
     public float throwForce = 600f;
     public float health;
     public float maxHealth = 100f;
@@ -432,72 +434,38 @@ public class Player : MonoBehaviour
         return _inputDirection;
     }
 
-    public void Shoot(Vector3 _viewDirection)
+    public void Shoot(Vector3 _playerPosition, Vector3 _viewDirection, int _fireModeInt)
     {
         if (health <= 0)
         {
             return;
         }
 
-        ServerSend.PlayerShot(this, _viewDirection);
-
-        if (Physics.Raycast(shootOrigin.position, _viewDirection, out RaycastHit _hit, shootDistance))
+        if (weaponsController.weaponsEquiped[weaponsController.weaponUsed] != null)
         {
-            if (_hit.collider.CompareTag("Player"))
+            if (weaponsController.weaponUsed == 2)
             {
-                // If hit own player
-                if (_hit.collider.gameObject.GetComponent<Player>() == this)
-                {
-                    return;
-                }
-                // If the player hit is dead
-                if (_hit.collider.GetComponent<Player>().health <= 0)
-                {
-                    return;
-                }
-
-                _hit.collider.GetComponent<Player>().TakeDamage(50f);
-                ServerSend.PlayerHitInfo(id, _hit.point, 50f);
-
-                if (_hit.collider.GetComponent<Player>().health <= 0)
-                {
-                    kills++;
-                    ServerSend.PlayerKilled(username, _hit.collider.GetComponent<Player>().username);
-                    ServerSend.PlayerDeathsAndKills(this);
-                }
+                StartCoroutine(weaponsController.weaponsEquiped[weaponsController.weaponUsed].GetComponent<MeleeController>().NormalHit());
             }
-            else if (_hit.collider.CompareTag("Enemy"))
+            else
             {
-                if (_hit.collider.GetComponent<Enemy>().health <= 0)
-                {
-                    return;
-                }
-
-                _hit.collider.GetComponent<Enemy>().TakeDamage(50f);
-                ServerSend.PlayerHitInfo(id, _hit.point, 50f);
-
-                if (_hit.collider.GetComponent<Enemy>().health <= 0)
-                {
-                    kills++;
-                    ServerSend.PlayerKilled(username, "Bot");
-                    ServerSend.PlayerDeathsAndKills(this);
-                }
+                weaponsController.weaponsEquiped[weaponsController.weaponUsed].GetComponent<Weapon>().Fire(_playerPosition, _viewDirection, _fireModeInt);
             }
         }
     }
 
     public void ThrowItem(Vector3 _viewDirection)
     {
-        if (health <= 0)
-        {
-            return;
-        }
+        //if (health <= 0)
+        //{
+        //    return;
+        //}
 
-        if (itemAmount > 0)
-        {
-            itemAmount--;
-            NetworkManager.instance.InstantiateProjectile(shootOrigin).Initialize(_viewDirection, throwForce, id);
-        }
+        //if (itemAmount > 0)
+        //{
+        //    itemAmount--;
+        //    NetworkManager.instance.InstantiateProjectile(shootOrigin).Initialize(_viewDirection, throwForce, id);
+        //}
     }
 
     public void TakeDamage(float _damage)
@@ -511,6 +479,16 @@ public class Player : MonoBehaviour
         if (health <= 0)
         {
             health = 0;
+
+
+            // search all weapons in weaponsholder, then deactivate weapons
+            Weapon[] _weapons = weaponsController.weaponsHolder.transform.GetComponentsInChildren<Weapon>(true);
+            foreach (Weapon _weapon in _weapons)
+            {
+                _weapon.enabled = false;
+                _weapon.gameObject.SetActive(false);
+            }
+
 
             MapProperties _currentMapProperties = GameObject.FindWithTag("Map").GetComponent<MapProperties>();
             transform.position = _currentMapProperties.spawnPositions[Random.Range(0, _currentMapProperties.spawnPositions.Length)].position;
@@ -532,6 +510,32 @@ public class Player : MonoBehaviour
 
         health = maxHealth;
         ServerSend.PlayerRespawned(this);
+
+        // search all weapons in weaponsholder, then activate weapons
+        Weapon[] _weapons = weaponsController.weaponsHolder.transform.GetComponentsInChildren<Weapon>(true);
+        foreach (Weapon _weapon in _weapons)
+        {
+            _weapon.canFire = true;
+            _weapon.reloading = false;
+            if (weaponsController.weaponsEquiped[weaponsController.weaponUsed] != null)
+            {
+                if (_weapon == weaponsController.weaponsEquiped[weaponsController.weaponUsed].GetComponent<Weapon>())
+                {
+                    _weapon.enabled = true;
+                    _weapon.gameObject.SetActive(true);
+                }
+                else
+                {
+                    _weapon.enabled = false;
+                    _weapon.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                _weapon.enabled = false;
+                _weapon.gameObject.SetActive(false);
+            }
+        }
     }
 
     public bool AttemptPickupItem()

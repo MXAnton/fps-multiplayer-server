@@ -742,6 +742,10 @@ MonoBehaviour:
   playerPrefab: {fileID: 9108499632171182411, guid: 27f0cd590b95be74eb81a4876b67c63a, type: 3}
   enemyPrefab: {fileID: 9108499632171182411, guid: 668a5106506eda9449c67f44b6b06c80, type: 3}
   projectilePrefab: {fileID: 6240697576778571574, guid: 428167d27dea2ad4abb13eb5ebd3f8ad, type: 3}
+  nextWeaponId: 0
+  ak47Prefab: {fileID: 5571170507821448836, guid: 1271992e7b9ef104489df868aa1a1f31, type: 3}
+  pistolPrefab: {fileID: 1458067163531951155, guid: 89274429aec27c84b9fb0dbfdc64d33f, type: 3}
+  knifePrefab: {fileID: 1458067163531951155, guid: 89274429aec27c84b9fb0dbfdc64d33f, type: 3}
 --- !u!4 &826530920
 Transform:
   m_ObjectHideFlags: 0
