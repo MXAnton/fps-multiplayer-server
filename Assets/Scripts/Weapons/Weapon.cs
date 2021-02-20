@@ -98,8 +98,8 @@ public class Weapon : MonoBehaviour
         if (canFire == true)
         {
             Vector3 _fireOrigin = _playerPosition + userWeaponsController.shootOrigin;
-            Debug.Log("playerpos: " + _playerPosition);
-            Debug.Log("shoot origin before: " + userWeaponsController.shootOrigin);
+            //Debug.Log("playerpos: " + _playerPosition);
+            //Debug.Log("shoot origin before: " + userWeaponsController.shootOrigin);
 
             switch (currentFireMode)
             {

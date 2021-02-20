@@ -63,7 +63,7 @@ public class WeaponsController : MonoBehaviour
                 Weapon[] _weapons = player.weaponsController.weaponsHolder.transform.GetComponentsInChildren<Weapon>(true);
                 foreach (Weapon _weapon in _weapons)
                 {
-                    Debug.Log("id: " + _weapon.id);
+                    //Debug.Log("id: " + _weapon.id);
 
                     if (_weapon.weaponType == _hit.transform.GetComponent<Weapon>().weaponType)
                     {
@@ -93,10 +93,10 @@ public class WeaponsController : MonoBehaviour
 
     public void TryDropWeapon(int _weaponId, int _weaponTypeUsed, Vector3 _direction)
     {
-        Debug.Log("Try drop weapon: " + _weaponId);
+        //Debug.Log("Try drop weapon: " + _weaponId);
         if (Weapon.weapons[_weaponId].transform.parent == weaponsHolder.transform)
         {
-            Debug.Log("Dropped weapon");
+            //Debug.Log("Dropped weapon");
 
             if (weaponsEquiped[_weaponTypeUsed] == Weapon.weapons[_weaponId])
             {

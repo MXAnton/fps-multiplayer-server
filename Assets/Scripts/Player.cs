@@ -43,6 +43,9 @@ public class Player : MonoBehaviour
     private bool hasMovementRequestId = false;
     private int latestMovementRequestId = 0;
 
+    private Vector3 oldSentPosition;
+    private float oldHeadXRotation;
+
     private void Start()
     {
         gravity *= Time.fixedDeltaTime * Time.fixedDeltaTime;
@@ -207,7 +210,14 @@ public class Player : MonoBehaviour
             GetUpFromGroundWithOffset(new Vector3(_moveDirection.x, 0, _moveDirection.z));
         }
 
-        ServerSend.PlayerPosition(id, this, false); // bool for teleport or lerped movement
+        if (Vector3.Distance(oldSentPosition, transform.position) > 0.005f || oldHeadXRotation - headXRotation > 0.1f || headXRotation - oldHeadXRotation > 0.1f)
+        {
+            oldSentPosition = transform.position;
+            oldHeadXRotation = headXRotation;
+
+            ServerSend.PlayerPosition(id, this, false); // bool for teleport or lerped movement
+            Debug.Log("Send player pos to clients");
+        }
     }
 
     private void CollisionCheck()
