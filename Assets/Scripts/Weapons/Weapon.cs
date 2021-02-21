@@ -184,52 +184,73 @@ public class Weapon : MonoBehaviour
 
         // Define ray
         Ray fireRay = new Ray(_fireOrigin, _fireDirection);
-        Physics.Raycast(fireRay, out RaycastHit _hit, shootDistance);
         
+        // Store all raycast hits in shootdistance and choose the closest, accepted hit
+        RaycastHit[] _hits = Physics.RaycastAll(fireRay, shootDistance);
+
         // If hit
-        if (_hit.collider != null)
+        if (_hits.Length > 0)
         {
-            // Impact on hit object
-            if (_hit.rigidbody != null && _hit.rigidbody.isKinematic == false) // If the object has rigidbody
+            RaycastHit _bestHit = _hits[0];
+
+            foreach (RaycastHit _hit in _hits)
             {
-                // Add force
-                _hit.rigidbody.AddForceAtPosition(transform.forward * hitForce, _hit.point, ForceMode.Impulse);
+                if (_hit.collider.CompareTag("Player"))
+                {
+                    // If hit own player
+                    if (_hit.collider.GetComponent<Player>() == userWeaponsController.player)
+                    {
+                        return;
+                    }
+                    // If the player hit is dead
+                    if (_hit.collider.GetComponent<Player>().health <= 0)
+                    {
+                        return;
+                    }
+                }
+
+                if (_hit.collider.CompareTag("Enemy"))
+                {
+                    if (_hit.collider.GetComponent<Enemy>().health <= 0)
+                    {
+                        return;
+                    }
+                }
+
+                // If this hit is better than current best hit, set this hit to best hit
+                if (_hit.distance < _bestHit.distance)
+                {
+                    _bestHit = _hit;
+                }
+                //Debug.Log(_hit.collider.gameObject.name);
             }
 
-            if (_hit.collider.CompareTag("Player"))
+
+            // Impact on hit object
+            if (_bestHit.rigidbody != null && _bestHit.rigidbody.isKinematic == false) // If the object has rigidbody
             {
-                // If hit own player
-                if (_hit.collider.GetComponent<Player>() == userWeaponsController.player)
-                {
-                    return;
-                }
-                // If the player hit is dead
-                if (_hit.collider.GetComponent<Player>().health <= 0)
-                {
-                    return;
-                }
+                // Add force
+                _bestHit.rigidbody.AddForceAtPosition(transform.forward * hitForce, _bestHit.point, ForceMode.Impulse);
+            }
 
-                _hit.collider.GetComponent<Player>().TakeDamage(hitDamage);
-                ServerSend.PlayerHitInfo(userWeaponsController.player.id, _hit.point, hitDamage);
+            if (_bestHit.collider.CompareTag("Player"))
+            {
+                _bestHit.collider.GetComponent<Player>().TakeDamage(hitDamage);
+                ServerSend.PlayerHitInfo(userWeaponsController.player.id, _bestHit.point, hitDamage);
 
-                if (_hit.collider.GetComponent<Player>().health <= 0)
+                if (_bestHit.collider.GetComponent<Player>().health <= 0)
                 {
                     userWeaponsController.player.kills++;
-                    ServerSend.PlayerKilled(userWeaponsController.player.username, _hit.collider.GetComponent<Player>().username);
+                    ServerSend.PlayerKilled(userWeaponsController.player.username, _bestHit.collider.GetComponent<Player>().username);
                     ServerSend.PlayerDeathsAndKills(userWeaponsController.player);
                 }
             }
-            else if (_hit.collider.CompareTag("Enemy"))
+            else if (_bestHit.collider.CompareTag("Enemy"))
             {
-                if (_hit.collider.GetComponent<Enemy>().health <= 0)
-                {
-                    return;
-                }
+                _bestHit.collider.GetComponent<Enemy>().TakeDamage(hitDamage);
+                ServerSend.PlayerHitInfo(userWeaponsController.player.id, _bestHit.point, hitDamage);
 
-                _hit.collider.GetComponent<Enemy>().TakeDamage(hitDamage);
-                ServerSend.PlayerHitInfo(userWeaponsController.player.id, _hit.point, hitDamage);
-
-                if (_hit.collider.GetComponent<Enemy>().health <= 0)
+                if (_bestHit.collider.GetComponent<Enemy>().health <= 0)
                 {
                     userWeaponsController.player.kills++;
                     ServerSend.PlayerKilled(userWeaponsController.player.username, "Bot");

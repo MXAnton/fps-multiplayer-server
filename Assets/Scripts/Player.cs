@@ -216,7 +216,7 @@ public class Player : MonoBehaviour
             oldHeadXRotation = headXRotation;
 
             ServerSend.PlayerPosition(id, this, false); // bool for teleport or lerped movement
-            Debug.Log("Send player pos to clients");
+            //Debug.Log("Send player pos to clients");
         }
     }
 
