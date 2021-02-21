@@ -218,6 +218,11 @@ public class Client
             ServerSend.CreateItemSpawner(id, _itemSpawner.spawnerId, _itemSpawner.transform.position, _itemSpawner.hasItem);
         }
 
+        foreach (GrenadeSpawner _grenadeSpawner in GrenadeSpawner.spawners.Values)
+        {
+            ServerSend.CreateGrenadeSpawner(id, _grenadeSpawner.spawnerId, _grenadeSpawner.transform.position, _grenadeSpawner.hasGrenade);
+        }
+
         foreach (Enemy _enemy in Enemy.enemies.Values)
         {
             ServerSend.SpawnEnemy(id, _enemy);

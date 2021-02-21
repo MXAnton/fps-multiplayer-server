@@ -20,8 +20,15 @@ public class WeaponsController : MonoBehaviour
 
     public int weaponUsed = 0; // 0 = primary, 1 = secondary, 2 = melee
 
+    [Header("Grenade Vars")]
+    public int grenadeCount;
+    public int maxGrenadeCount = 3;
+    public float grenadeThrowForce = 600f;
+    public Transform grenadeThrowOrigin;
+
     void Start()
     {
+        grenadeCount = maxGrenadeCount;
         weaponUsed = 0;
 
         if (weaponsEquiped[0] != null)
@@ -102,10 +109,10 @@ public class WeaponsController : MonoBehaviour
             {
                 weaponsEquiped[_weaponTypeUsed] = null;
             }
-            else
-            {
-                Debug.Log("Didn't drop usedweapon");
-            }
+            //else
+            //{
+            //    Debug.Log("Didn't drop usedweapon");
+            //}
 
             Weapon.weapons[_weaponId].transform.parent = null;
             Weapon.weapons[_weaponId].GetComponent<Weapon>().userWeaponsController = null;
@@ -290,6 +297,21 @@ public class WeaponsController : MonoBehaviour
         if (weaponsEquiped[weaponUsed] != null)
         {
             weaponsEquiped[weaponUsed].GetComponent<Weapon>().Reload();
+        }
+    }
+
+
+    public void ThrowGrenade(Vector3 _viewDirection)
+    {
+        if (player.health <= 0)
+        {
+            return;
+        }
+
+        if (grenadeCount > 0)
+        {
+            grenadeCount--;
+            NetworkManager.instance.InstantiateProjectile(grenadeThrowOrigin).Initialize(_viewDirection, grenadeThrowForce, player.id);
         }
     }
 }

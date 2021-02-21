@@ -109,6 +109,6 @@ public class ServerHandle
     {
         Vector3 _throwDirection = _packet.ReadVector3();
 
-        Server.clients[_fromClient].player.ThrowItem(_throwDirection);
+        Server.clients[_fromClient].player.weaponsController.ThrowGrenade(_throwDirection);
     }
 }

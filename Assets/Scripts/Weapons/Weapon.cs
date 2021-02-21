@@ -64,7 +64,7 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("Weaponscript activated");
+        //Debug.Log("Weaponscript activated");
         canFire = true;
         reloading = false;
     }

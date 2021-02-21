@@ -137,6 +137,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   weaponUsed: 0
+  grenadesAmount: 0
+  maxGrenadesAmount: 3
+  grenadeThrowForce: 600
+  grenadeThrowOrigin: {fileID: 3596838042474402104}
 --- !u!1 &7513071955338381158
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,7 +225,6 @@ MonoBehaviour:
   kills: 0
   deaths: 0
   weaponsController: {fileID: 5352838514317257881}
-  throwForce: 600
   health: 0
   maxHealth: 100
   itemAmount: 0

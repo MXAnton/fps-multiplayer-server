@@ -323,11 +323,44 @@ public class ServerSend
         }
     }
 
+    public static void CreateGrenadeSpawner(int _toClient, int _spawnerId, Vector3 _spawnerPosition, bool _hasGrenade)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.createGrenadeSpawner))
+        {
+            _packet.Write(_spawnerId);
+            _packet.Write(_spawnerPosition);
+            _packet.Write(_hasGrenade);
+
+            SendTCPData(_toClient, _packet);
+        }
+    }
+    public static void GrenadeSpawned(int _spawnerId)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.grenadeSpawned))
+        {
+            _packet.Write(_spawnerId);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+    public static void GrenadePickedUp(int _spawnerId, int _byPlayer)
+    {
+        using (Packet _packet = new Packet((int) ServerPackets.grenadePickedUp))
+        {
+            _packet.Write(_spawnerId);
+            _packet.Write(Server.clients[_byPlayer].player.weaponsController.grenadeCount);
+            _packet.Write(_byPlayer);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+
     public static void SpawnProjectile(Projectile _projectile, int _thrownByPlayer)
     {
         using (Packet _packet = new Packet((int)ServerPackets.spawnProjectile))
         {
             _packet.Write(_projectile.id);
+            _packet.Write(Server.clients[_thrownByPlayer].player.weaponsController.grenadeCount);
             _packet.Write(_projectile.transform.position);
             _packet.Write(_thrownByPlayer);
 

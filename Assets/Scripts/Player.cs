@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     //public CharacterController controller;
     //public Transform shootOrigin;
     //public float shootDistance = 100f;
-    public float throwForce = 600f;
+    //public float throwForce = 600f;
     public float health;
     public float maxHealth = 100f;
     public int itemAmount = 0;
@@ -462,20 +462,6 @@ public class Player : MonoBehaviour
                 weaponsController.weaponsEquiped[weaponsController.weaponUsed].GetComponent<Weapon>().Fire(_playerPosition, _viewDirection, _fireModeInt);
             }
         }
-    }
-
-    public void ThrowItem(Vector3 _viewDirection)
-    {
-        //if (health <= 0)
-        //{
-        //    return;
-        //}
-
-        //if (itemAmount > 0)
-        //{
-        //    itemAmount--;
-        //    NetworkManager.instance.InstantiateProjectile(shootOrigin).Initialize(_viewDirection, throwForce, id);
-        //}
     }
 
     public void TakeDamage(float _damage)
